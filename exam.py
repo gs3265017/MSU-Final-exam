@@ -39,26 +39,33 @@ class RealString(object):
 
 
 class Real_Text(object):
+    counter = 0
+    input_file = None
+    word_arr = None
+    new_list = None
 
-    def __init__(self, input_file=open('input.txt', 'r', encoding='utf-8')):
-        self.input_file = input_file
-        x = input_file.read()
-        # try:
-        #     file = open(self.input_file)
-        #     file.read()
-        # except IOError:
-        #     print('Cannot read the file!')
-        # string = file.read()
-        # temp_list = string.split('\n')
+    def __init__(self, input_file):
+        self.input_file = open(input_file, 'r', encoding='utf-8')
+        self.word_arr = list()
+        for line in self.input_file:
+            x = filter(None, re.split("[, \\n\\-!?:]+", line))
+            for word in x:
+                self.word_arr.append(RealString(word))
+        self.input_file.close()
 
-    # def sum(self, other: object):
-    #     if isinstance(other, list):
-    #         return RealString(self.a + [other])
+    def __add__(self, other):
+        if isinstance(other, Real_text):
+            self.new_list = list()
+            x = self.word_arr + other.word_arr
+            for element in x:
+                self.new_list.append(str(element))
+            return self.new_list
 
-    def new_file(self, string_list=open('output.txt', 'w', encoding='utf-8')):
-        f_1 = string_list
-        f_1.writelines(line + ' ' for line in string_list)
-        f_1.close()
+    def save(self, output_file):
+        x = open(output_file, 'w', encoding='utf-8')
+        x.writelines(str(element) + ' ' for element in self.word_arr)
+        print('File written!')
+        return x.close()
 
 
 string_1 = RealString('Съешь еще этих мягких французских булок да выпей чаю')
